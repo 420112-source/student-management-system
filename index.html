@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaStore - Modern E-Commerce Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-4">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer" onclick="resetFilters()">
+                    <div class="bg-brand-600 text-white p-2 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-brand-500/30">
+                        <i class="fa-solid font-bold fa-bag-shopping"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-gray-900">Nova<span class="text-brand-600">Store</span></span>
+                </div>
+
+                <!-- Desktop Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-md relative">
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search tech, apparel, accessories..." 
+                           class="w-full pl-10 pr-4 py-2 bg-gray-100/80 border border-transparent rounded-full text-sm focus:outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-sm"></i>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-3">
+                    <!-- Wishlist Count Button -->
+                    <button class="relative p-2 text-gray-600 hover:text-brand-600 hover:bg-gray-100 rounded-full transition-colors" title="Wishlist">
+                        <i class="fa-regular fa-heart text-xl"></i>
+                        <span id="wishlistCount" class="absolute -top-1 -right-1 bg-rose-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+
+                    <!-- Cart Trigger Button -->
+                    <button onclick="toggleCart()" class="relative p-2 text-gray-600 hover:text-brand-600 hover:bg-gray-100 rounded-full transition-colors" title="Cart">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 bg-brand-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Trigger -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-600 hover:text-brand-600 rounded-lg">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="md:hidden pb-3">
+                <div class="relative">
+                    <input type="text" id="mobileSearchInput" oninput="handleMobileSearch()" placeholder="Search catalog..." 
+                           class="w-full pl-10 pr-4 py-2 bg-gray-100 border border-transparent rounded-full text-sm focus:outline-none focus:bg-white focus:border-brand-500">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Banner -->
+        <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-brand-900 text-white p-8 md:p-12 mb-10 shadow-xl">
+            <div class="relative z-10 max-w-xl">
+                <span class="inline-block px-3 py-1 bg-brand-500/20 backdrop-blur-md border border-brand-400/30 text-brand-300 text-xs font-semibold uppercase tracking-wider rounded-full mb-4">Limited Time Offer</span>
+                <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">Upgrade Your Everyday Gear</h1>
+                <p class="text-slate-300 text-sm md:text-base mb-6">Discover curations of high-performance tech accessories and minimal essentials up to 40% off.</p>
+                <button onclick="filterCategory('electronics')" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg shadow-brand-600/30 flex items-center gap-2">
+                    Shop Electronics <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+            <!-- Decorative Graphics -->
+            <div class="absolute -right-12 -bottom-12 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+            <!-- Categories Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 custom-scrollbar" id="categoryContainer">
+                <!-- Dynamically Populated Categories -->
+            </div>
+
+            <!-- Sorting Dropdown -->
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <label for="sortSelect" class="text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Sort By:</label>
+                <select id="sortSelect" onchange="handleSort()" class="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500 cursor-pointer shadow-sm">
+                    <option value="featured">Featured</option>
+                    <option value="low-high">Price: Low to High</option>
+                    <option value="high-low">Price: High to Low</option>
+                    <option value="rating">Top Rated</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Dynamic Product Cards Injected Here -->
+        </div>
+
+        <!-- Empty State Message -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                <i class="fa-solid fa-box-open text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">No products found</h3>
+            <p class="text-sm text-gray-500 mt-1">Try adjusting your search or category filters.</p>
+            <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-brand-600 text-white text-sm font-semibold rounded-xl">Reset All Filters</button>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar Overlay -->
+    <div id="cartOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="toggleCart()">
+        <div id="cartSidebar" class="fixed inset-y-0 right-0 max-w-full w-full sm:w-96 bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto" onclick="event.stopPropagation()">
+            
+            <!-- Cart Header -->
+            <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bag-shopping text-brand-600"></i>
+                    <h2 class="font-bold text-lg text-gray-900">Your Shopping Cart</h2>
+                </div>
+                <button onclick="toggleCart()" class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items Container -->
+            <div id="cartItems" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar">
+                <!-- Dynamic Cart Items Injected Here -->
+            </div>
+
+            <!-- Cart Footer -->
+            <div class="p-5 border-t border-gray-100 bg-gray-50 space-y-3">
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal" class="font-semibold text-gray-800">$0.00</span>
+                </div>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                    <span>Tax (Estimated)</span>
+                    <span id="cartTax" class="font-semibold text-gray-800">$0.00</span>
+                </div>
+                <div class="flex items-center justify-between text-base font-bold text-gray-900 pt-2 border-t border-gray-200">
+                    <span>Total Amount</span>
+                    <span id="cartTotal" class="text-brand-600">$0.00</span>
+                </div>
+                <button id="checkoutBtn" onclick="openCheckoutModal()" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-brand-600/20 flex items-center justify-center gap-2">
+                    <span>Proceed to Checkout</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-full">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Complete Your Order</h3>
+            <p class="text-sm text-gray-500 mb-6">Enter your details to simulate database order placement.</p>
+
+            <form id="checkoutForm" onsubmit="processOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Full Name</label>
+                    <input type="text" required placeholder="John Doe" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email Address</label>
+                    <input type="email" required placeholder="john@example.com" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Shipping Address</label>
+                    <textarea required rows="2" placeholder="123 Main St, Tech City, 10001" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+                <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <div>
+                        <span class="block text-xs text-gray-400">Total Payable</span>
+                        <span id="modalTotal" class="text-xl font-bold text-brand-600">$0.00</span>
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-lg shadow-brand-600/20">
+                        Confirm & Pay
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">Item added to cart!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+            <p>&copy; 2026 NovaStore Inc. Built for Full Stack Submission.</p>
+            <div class="flex gap-4">
+                <a href="#" class="hover:underline">Privacy Policy</a>
+                <a href="#" class="hover:underline">Terms of Service</a>
+                <a href="#" class="hover:underline">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simulated Database / Product Catalog
+        const products = [
+            {
+                id: 1,
+                name: "Wireless ANC Headphones",
+                category: "electronics",
+                price: 199.99,
+                rating: 4.8,
+                reviews: 124,
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
+                description: "Noise cancelling wireless over-ear headphones with 30-hour battery life."
+            },
+            {
+                id: 2,
+                name: "Minimalist Mechanical Keyboard",
+                category: "electronics",
+                price: 129.50,
+                rating: 4.9,
+                reviews: 89,
+                image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80",
+                description: "Tactile mechanical keyboard with customizable RGB backlighting."
+            },
+            {
+                id: 3,
+                name: "Ergonomic Office Chair",
+                category: "furniture",
+                price: 289.00,
+                rating: 4.6,
+                reviews: 210,
+                image: "https://images.unsplash.com/photo-1580481072645-022f9a6d1270?auto=format&fit=crop&w=600&q=80",
+                description: "Breathable mesh chair with adjustable lumbar support."
+            },
+            {
+                id: 4,
+                name: "Smart Watch Series X",
+                category: "electronics",
+                price: 349.99,
+                rating: 4.7,
+                reviews: 65,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
+                description: "Fitness and health tracker with AMOLED display and ECG monitor."
+            },
+            {
+                id: 5,
+                name: "Leather Minimalist Wallet",
+                category: "accessories",
+                price: 45.00,
+                rating: 4.5,
+                reviews: 53,
+                image: "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=600&q=80",
+                description: "Genuine full-grain leather wallet with RFID protection."
+            },
+            {
+                id: 6,
+                name: "Ceramic Coffee Mug",
+                category: "lifestyle",
+                price: 24.99,
+                rating: 4.3,
+                reviews: 42,
+                image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80",
+                description: "Handcrafted 12oz matte finish ceramic mug."
+            }
+        ];
+
+        // State Management initialized with LocalStorage
+        let cart = JSON.parse(localStorage.getItem('novastore_cart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('novastore_wishlist')) || [];
+        let activeCategory = 'all';
+        let searchQuery = '';
+        let currentSort = 'featured';
+
+        // Initialize App
+        document.addEventListener("DOMContentLoaded", () => {
+            renderCategories();
+            renderProducts();
+            updateCartUI();
+        });
+
+        function renderCategories() {
+            const categories = ['all', ...new Set(products.map(p => p.category))];
+            const container = document.getElementById('categoryContainer');
+            
+            container.innerHTML = categories.map(cat => `
+                <button onclick="filterCategory('${cat}')" 
+                        class="px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all whitespace-nowrap ${
+                            activeCategory === cat 
+                            ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20' 
+                            : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                        }">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            renderCategories();
+            renderProducts();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            renderProducts();
+        }
+
+        function handleMobileSearch() {
+            searchQuery = document.getElementById('mobileSearchInput').value.toLowerCase();
+            renderProducts();
+        }
+
+        function handleSort() {
+            currentSort = document.getElementById('sortSelect').value;
+            renderProducts();
+        }
+
+        function resetFilters() {
+            activeCategory = 'all';
+            searchQuery = '';
+            currentSort = 'featured';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('mobileSearchInput').value = '';
+            document.getElementById('sortSelect').value = 'featured';
+            renderCategories();
+            renderProducts();
+        }
+
+        function renderProducts() {
+            let filtered = products.filter(p => {
+                const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery) || p.description.toLowerCase().includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            // Sorting logic
+            if (currentSort === 'low-high') filtered.sort((a,b) => a.price - b.price);
+            if (currentSort === 'high-low') filtered.sort((a,b) => b.price - a.price);
+            if (currentSort === 'rating') filtered.sort((a,b) => b.rating - a.rating);
+
+            const grid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(p => {
+                const isWishlisted = wishlist.includes(p.id);
+                return `
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="relative aspect-square overflow-hidden bg-gray-100">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <button onclick="toggleWishlist(${p.id})" class="absolute top-3 right-3 w-9 h-9 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-gray-600 hover:text-rose-500 transition-colors">
+                            <i class="${isWishlisted ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart'}"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-semibold text-brand-600 uppercase tracking-wider">${p.category}</span>
+                            <div class="flex items-center gap-1 text-xs text-amber-500 font-semibold">
+                                <i class="fa-solid fa-star"></i>
+                                <span>${p.rating}</span>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-gray-900 text-base mb-1 group-hover:text-brand-600 transition-colors line-clamp-1">${p.name}</h3>
+                        <p class="text-xs text-gray-500 line-clamp-2 mb-4 flex-1">${p.description}</p>
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-50">
+                            <span class="text-lg font-extrabold text-gray-900">$${p.price.toFixed(2)}</span>
+                            <button onclick="addToCart(${p.id})" class="px-4 py-2 bg-brand-50 hover:bg-brand-600 text-brand-600 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function addToCart(productId) {
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ id: productId, quantity: 1 });
+            }
+            saveCart();
+            showToast("Added item to shopping cart!");
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.id !== productId);
+                }
+            }
+            saveCart();
+        }
+
+        function saveCart() {
+            localStorage.setItem('novastore_cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').innerText = count;
+
+            const cartContainer = document.getElementById('cartItems');
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-3"></i>
+                        <p class="text-sm">Your cart is empty.</p>
+                    </div>
+                `;
+            } else {
+                cartContainer.innerHTML = cart.map(item => {
+                    const product = products.find(p => p.id === item.id);
+                    const itemTotal = product.price * item.quantity;
+                    subtotal += itemTotal;
+
+                    return `
+                        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                            <img src="${product.image}" class="w-16 h-16 object-cover rounded-lg">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold text-xs text-gray-900 truncate">${product.name}</h4>
+                                <span class="text-xs font-semibold text-brand-600">$${product.price.toFixed(2)}</span>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <button onclick="updateQuantity(${product.id}, -1)" class="w-6 h-6 bg-white border border-gray-200 rounded flex items-center justify-center text-xs font-bold">-</button>
+                                    <span class="text-xs font-semibold">${item.quantity}</span>
+                                    <button onclick="updateQuantity(${product.id}, 1)" class="w-6 h-6 bg-white border border-gray-200 rounded flex items-center justify-center text-xs font-bold">+</button>
+                                </div>
+                            </div>
+                            <span class="font-bold text-xs text-gray-800">$${itemTotal.toFixed(2)}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const tax = subtotal * 0.08;
+            const total = subtotal + tax;
+
+            document.getElementById('cartSubtotal').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cartTax').innerText = `$${tax.toFixed(2)}`;
+            document.getElementById('cartTotal').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('modalTotal').innerText = `$${total.toFixed(2)}`;
+        }
+
+        function toggleWishlist(id) {
+            if (wishlist.includes(id)) {
+                wishlist = wishlist.filter(wId => wId !== id);
+                showToast("Removed from wishlist", "info");
+            } else {
+                wishlist.push(id);
+                showToast("Saved to wishlist!");
+            }
+            localStorage.setItem('novastore_wishlist', JSON.stringify(wishlist));
+            const wlBtn = document.getElementById('wishlistCount');
+            wlBtn.innerText = wishlist.length;
+            wlBtn.classList.toggle('hidden', wishlist.length === 0);
+            renderProducts();
+        }
+
+        function toggleCart() {
+            const overlay = document.getElementById('cartOverlay');
+            const sidebar = document.getElementById('cartSidebar');
+            
+            if (overlay.classList.contains('opacity-0')) {
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                sidebar.classList.remove('translate-x-full');
+            } else {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                sidebar.classList.add('translate-x-full');
+            }
+        }
+
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                showToast("Cart is empty!", "error");
+                return;
+            }
+            toggleCart();
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function processOrder(e) {
+            e.preventDefault();
+            cart = [];
+            saveCart();
+            closeCheckoutModal();
+            showToast("Order placed successfully! Database updated.");
+        }
+
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            if (type === "error") {
+                toastIcon.className = "fa-solid fa-circle-xmark text-rose-400";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
