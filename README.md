@@ -1,16 +1,21 @@
-# React + Vite
+# Student Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A Full Stack web application built to manage student records, track academic GPAs, and handle department enrollments.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
+- **Frontend:** React, Vite, CSS
+- **Backend:** Node.js, Express.js
+- **Database:** In-Memory Data Store (REST API)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📌 Features
+- **Full CRUD Operations:** Add, view, edit, and delete student records.
+- **Search & Filter:** Search by student name or email and filter by department.
+- **Academic Metrics:** Dynamic GPA tracking and status indicators.
+- **Responsive UI:** Clean modal dialogs and dynamic tables.
 
-## React Compiler
+## 🛠️ How to Run Locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### 1. Backend Setup
+```bash
+npm install
+node server.js
